@@ -48,4 +48,14 @@ public class FaceCoeficient {
     public void setD(double d) {
         this.d = d;
     }
+
+    @Override
+    public String toString() {
+        return "Plane{" +
+                "a=" + a +
+                ", b=" + b +
+                ", c=" + c +
+                ", d=" + d +
+                '}';
+    }
 }

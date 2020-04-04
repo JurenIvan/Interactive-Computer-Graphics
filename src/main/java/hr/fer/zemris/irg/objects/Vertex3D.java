@@ -1,5 +1,6 @@
 package hr.fer.zemris.irg.objects;
 
+import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
 
 public class Vertex3D {
@@ -39,5 +40,14 @@ public class Vertex3D {
 
     public Vertex3D copy() {
         return of(copyOf(cords, 3));
+    }
+
+    @Override
+    public String toString() {
+        return format("Tocka {x=%s, y=%s, z=%s}", cords[0], cords[1], cords[2]);
+    }
+
+    public String toOBJ() {
+        return format("v %s %s %s", cords[0], cords[1], cords[2]);
     }
 }

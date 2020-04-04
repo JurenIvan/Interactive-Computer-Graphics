@@ -1,7 +1,12 @@
 package hr.fer.zemris.irg.objects;
 
+import hr.fer.zemris.irg.math.vector.Vector;
+import hr.fer.zemris.irg.shapes.Point;
+
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static java.lang.Double.*;
 import static java.util.stream.Collectors.toList;
 
@@ -20,21 +25,15 @@ public class ObjectModel {
     public String dumpToOBJ() {
         StringBuilder sb = new StringBuilder();
 
-        vertices.forEach(e -> sb.append("v ")
-                .append(e.getX()).append(' ')
-                .append(e.getY()).append(' ')
-                .append(e.getZ()).append('\n'));
-
-        faces.forEach(e -> sb.append("f ")
-                .append(e.vertexIndex[0]).append(' ')
-                .append(e.vertexIndex[1]).append(' ')
-                .append(e.vertexIndex[2]).append('\n'));
+        vertices.forEach(e -> sb.append(e.toOBJ()).append('\n'));
+        faces.forEach(e -> sb.append(e.toOBJ()).append('\n'));
 
         return sb.toString();
     }
 
-    public void normalize() {
+    public ObjectModel normalize() {
         double xMin, xMax, yMin, yMax, zMin, zMax;
+
         xMax = yMax = zMax = MIN_VALUE;
         xMin = yMin = zMin = MAX_VALUE;
 
@@ -55,6 +54,7 @@ public class ObjectModel {
 
         translateVertices(vertices, -xAvg, -yAvg, -zAvg);
         scaleVertices(vertices, 2 / m);
+        return this;
     }
 
     public static ObjectModel parse(List<String> lines) {
@@ -84,5 +84,55 @@ public class ObjectModel {
 
     public List<FaceCoeficient> getFaceCoefficients() {
         return faces.stream().map(e -> e.calculateCoefficients(vertices)).collect(toList());
+    }
+
+    public Boolean calculatePosition(Vertex3D point) {
+        Boolean inside = TRUE;
+        for (var face : faces) {
+            var params = face.calculateCoefficients(vertices);
+            var pos = params.getA() * point.getX() + params.getB() * point.getY() + params.getC() * point.getZ() + params.getD();
+
+            if (pos > 0) inside = FALSE;
+            else if (pos == 0 && onAFace(point)) inside = null;
+        }
+        return inside;
+    }
+
+    private boolean onAFace(Vertex3D point) {
+        double direction = 0;
+
+        for (int i = 0; i < vertices.size(); i++) {
+            Vertex3D first = vertices.get(i);
+            Vertex3D second = vertices.get((i + 1) % vertices.size());
+
+            Vector edge = new Vector(second.getX() - first.getX(), second.getY() - first.getY(), second.getZ() - first.getZ());
+            Vector connect = new Vector(point.getX() - second.getX(), point.getY() - second.getY(), point.getZ() - second.getZ());
+
+            double product = connect.nVectorProduct(edge).get(2);
+
+            if (direction < 0 && product > 0 || direction > 0 && product < 0)
+                return false;
+            direction = product != 0 ? product : direction;
+        }
+        return true;
+    }
+
+    public static boolean checker(List<Point> points, int x, int y) {
+        double direction = 0;
+
+        for (int i = 0; i < points.size(); i++) {
+            Point first = points.get(i);
+            Point second = points.get((i + 1) % points.size());
+
+            Vector edge = new Vector(second.getX() - first.getX(), second.getY() - first.getY(), 0);
+            Vector connect = new Vector(x - second.getX(), y - second.getY(), 0);
+
+            double product = connect.nVectorProduct(edge).get(2);
+
+            if (direction < 0 && product > 0 || direction > 0 && product < 0)
+                return false;
+            direction = product != 0 ? product : direction;
+        }
+        return true;
     }
 }
