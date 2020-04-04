@@ -1,7 +1,6 @@
 package hr.fer.zemris.irg.objects;
 
 import hr.fer.zemris.irg.math.vector.Vector;
-import hr.fer.zemris.irg.shapes.Point;
 
 import java.util.List;
 
@@ -110,27 +109,7 @@ public class ObjectModel {
 
             double product = connect.nVectorProduct(edge).get(2);
 
-            if (direction < 0 && product > 0 || direction > 0 && product < 0)
-                return false;
-            direction = product != 0 ? product : direction;
-        }
-        return true;
-    }
-
-    public static boolean checker(List<Point> points, int x, int y) {
-        double direction = 0;
-
-        for (int i = 0; i < points.size(); i++) {
-            Point first = points.get(i);
-            Point second = points.get((i + 1) % points.size());
-
-            Vector edge = new Vector(second.getX() - first.getX(), second.getY() - first.getY(), 0);
-            Vector connect = new Vector(x - second.getX(), y - second.getY(), 0);
-
-            double product = connect.nVectorProduct(edge).get(2);
-
-            if (direction < 0 && product > 0 || direction > 0 && product < 0)
-                return false;
+            if (direction < 0 && product > 0 || direction > 0 && product < 0) return false;
             direction = product != 0 ? product : direction;
         }
         return true;

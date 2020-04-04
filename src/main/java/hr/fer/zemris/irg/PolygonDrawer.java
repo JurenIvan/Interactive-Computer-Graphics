@@ -118,13 +118,11 @@ public class PolygonDrawer extends JFrame {
         PolyDrawer.fillPoly(list, gl2);
     }
 
-
     private void drawLines(GL2 gl2) {
         List<Point> pointsExtended = new ArrayList<>(points);
         if (pointing != null) pointsExtended.add(pointing);
         PolyDrawer.encirclePoly(pointsExtended, gl2);
     }
-
 
     private void addNewTriangleListener() {
         glCanvas.addMouseListener(new MouseAdapter() {
@@ -143,9 +141,8 @@ public class PolygonDrawer extends JFrame {
                     pointing = new Point(e.getX(), e.getY());
 
                     glCanvas.display();
-                } else {
+                } else
                     System.out.println("Point x=" + e.getX() + ", y=" + e.getY() + (isPointInsideOfPolygone(points, e.getX(), e.getY()) ? " IS " : " IS NOT ") + "inside of polygon");
-                }
             }
         });
 
@@ -166,7 +163,7 @@ public class PolygonDrawer extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case VK_K:
+                    case VK_K: {
                         if (isItInState) {
                             System.out.println("Not possible in this state");
                             break;
@@ -177,18 +174,18 @@ public class PolygonDrawer extends JFrame {
                         }
                         convexity = !convexity;
                         break;
-
-                    case VK_P:
+                    }
+                    case VK_P: {
                         if (!isItInState) fill = !fill;
                         else System.out.println("Not possible in this state");
                         break;
-
-                    case VK_N:
+                    }
+                    case VK_N: {
                         pointing = null;
                         if (isItInState) points.clear();
                         isItInState = !isItInState;
                         break;
-
+                    }
                     case VK_S:
                         mySpecialState = !mySpecialState;
                 }
@@ -196,6 +193,4 @@ public class PolygonDrawer extends JFrame {
             }
         });
     }
-
-
 }

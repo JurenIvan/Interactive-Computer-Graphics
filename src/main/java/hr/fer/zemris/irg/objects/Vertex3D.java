@@ -1,53 +1,57 @@
 package hr.fer.zemris.irg.objects;
 
 import static java.lang.String.format;
-import static java.util.Arrays.copyOf;
 
 public class Vertex3D {
 
-    private double[] cords;
+    private double x;
+    private double y;
+    private double z;
+
+    public Vertex3D(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public static Vertex3D of(double x, double y, double z) {
-        Vertex3D vertex = new Vertex3D();
-        vertex.cords = new double[3];
-        vertex.cords[0] = x;
-        vertex.cords[1] = y;
-        vertex.cords[2] = z;
-        return vertex;
+        return new Vertex3D(x, y, z);
     }
 
     public static Vertex3D of(double[] cords) {
-        Vertex3D vertex = new Vertex3D();
-        vertex.cords = copyOf(cords, 3);
-        return vertex;
+        return new Vertex3D(cords[0], cords[1], cords[2]);
     }
 
     public double[] getCords() {
-        return cords;
-    }
-
-    public double getX() {
-        return cords[0];
-    }
-
-    public double getY() {
-        return cords[1];
-    }
-
-    public double getZ() {
-        return cords[2];
+        var arr = new double[3];
+        arr[0] = x;
+        arr[1] = y;
+        arr[2] = z;
+        return arr;
     }
 
     public Vertex3D copy() {
-        return of(copyOf(cords, 3));
+        return new Vertex3D(x, y, z);
+    }
+
+    public String toOBJ() {
+        return format("v %s %s %s", x, y, z);
     }
 
     @Override
     public String toString() {
-        return format("Tocka {x=%s, y=%s, z=%s}", cords[0], cords[1], cords[2]);
+        return format("Tocka {x=%s, y=%s, z=%s}", x, y, z);
     }
 
-    public String toOBJ() {
-        return format("v %s %s %s", cords[0], cords[1], cords[2]);
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
     }
 }

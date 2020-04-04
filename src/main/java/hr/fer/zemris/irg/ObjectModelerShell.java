@@ -18,7 +18,6 @@ import static java.lang.Double.parseDouble;
 public class ObjectModelerShell {
 
     private static final String STANDARD_PATH_TO_RESOURCES = "src/main/resources/";
-    private static final String IN_FILE = STANDARD_PATH_TO_RESOURCES + "tetrahedron.obj";
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1)
