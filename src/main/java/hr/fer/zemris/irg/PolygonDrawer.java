@@ -18,7 +18,7 @@ import static com.jogamp.opengl.GL2.GL_PROJECTION;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static hr.fer.zemris.irg.color.Color.BLACK;
 import static hr.fer.zemris.irg.color.Color.GREEN;
-import static hr.fer.zemris.irg.shapes.Polynom.*;
+import static hr.fer.zemris.irg.shapes.Polygon.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.event.KeyEvent.*;
 

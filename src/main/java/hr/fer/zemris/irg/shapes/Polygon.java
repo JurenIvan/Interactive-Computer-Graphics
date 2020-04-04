@@ -10,7 +10,7 @@ import java.util.List;
 import static com.jogamp.opengl.GL.GL_POINTS;
 import static hr.fer.zemris.irg.color.Color.BLUE;
 
-public class Polynom {
+public class Polygon {
 
     public static boolean isPointInsideOfPolygone(List<Point> points, int x, int y) {
         return checker(points, x, y);
