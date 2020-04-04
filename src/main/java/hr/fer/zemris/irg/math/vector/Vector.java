@@ -71,7 +71,7 @@ public class Vector extends AbstractVector {
 
         stringBuilder.append("[");
         for (var element : this.elements)
-            stringBuilder.append(String.format(numberFormat, element));
+            stringBuilder.append(String.format(numberFormat, element)).append(',');
         stringBuilder.append("]");
         return String.format("Vector{elements=%s, readOnly=%s}", stringBuilder.toString(), readOnly);
     }
