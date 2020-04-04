@@ -3,7 +3,9 @@ package hr.fer.zemris.irg;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
-import hr.fer.zemris.irg.math.vector.Vector;
+import hr.fer.zemris.irg.drawers.LineDrawer;
+import hr.fer.zemris.irg.drawers.PolyDrawer;
+import hr.fer.zemris.irg.shapes.Line;
 import hr.fer.zemris.irg.shapes.Point;
 
 import javax.swing.*;
@@ -11,10 +13,12 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static com.jogamp.opengl.GL2.GL_PROJECTION;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
-import static hr.fer.zemris.irg.color.Color.*;
+import static hr.fer.zemris.irg.color.Color.BLACK;
+import static hr.fer.zemris.irg.color.Color.GREEN;
+import static hr.fer.zemris.irg.shapes.Polynom.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.event.KeyEvent.*;
 
@@ -31,7 +35,7 @@ public class PolygonDrawer extends JFrame {
     private boolean fill = false;
     private boolean convexity = false;
     private boolean isItInState = false;
-    private boolean kurac = false;
+    private boolean mySpecialState = false;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(PolygonDrawer::new);
@@ -73,54 +77,17 @@ public class PolygonDrawer extends JFrame {
             @Override
             public void display(GLAutoDrawable glAutoDrawable) {
                 GL2 gl2 = glAutoDrawable.getGL().getGL2();
-                if (convexity) gl2.glClearColor(1, 1, 1, 1);
-                else gl2.glClearColor(GREEN.getR(), GREEN.getG(), GREEN.getB(), 1);
+
+                if (convexity) gl2.glClearColor(GREEN.getR(), GREEN.getG(), GREEN.getB(), 1);
+                else gl2.glClearColor(1, 1, 1, 1);
                 gl2.glClear(GL_COLOR_BUFFER_BIT);
 
+                if (mySpecialState) paintAcceptableStates(gl2, points, pointing);
+
                 if (!fill) drawLines(gl2);
-                else drawPolyGone(gl2);
+                if (fill) drawPolygon(gl2);
 
                 gl2.glLoadIdentity();
-            }
-
-            private void drawPolyGone(GL2 gl2) {
-                var lista = new ArrayList<>(points);
-                if (pointing != null) lista.add(pointing);
-                gl2.glBegin(GL_POINTS);
-                gl2.glColor3f(RED.getR(), RED.getG(), RED.getB());
-
-                int ymin;
-                int xmin = ymin = Integer.MAX_VALUE;
-                int xmax;
-                int ymax = xmax = Integer.MIN_VALUE;
-
-                for (Point point : lista) {
-                    if (ymin > point.getY()) ymin = point.getY();
-                    if (xmin > point.getX()) xmin = point.getX();
-                    if (ymax < point.getY()) ymax = point.getY();
-                    if (xmax < point.getX()) xmax = point.getX();
-                }
-
-                for (int i = xmin; i < xmax; i++) {
-                    for (int j = ymin; j < ymax; j++) {
-                        if (checker(lista, i, j)) {
-                            gl2.glVertex2i(i, j);
-                        }
-                    }
-                }
-
-                gl2.glEnd();
-            }
-
-
-            private void drawLines(GL2 gl2) {
-                gl2.glBegin(GL_LINE_LOOP);
-                gl2.glColor3f(BLACK.getR(), BLACK.getG(), BLACK.getB());
-                for (var point : points)
-                    gl2.glVertex2i(point.getX(), point.getY());
-                if (pointing != null)
-                    gl2.glVertex2i(pointing.getX(), pointing.getY());
-                gl2.glEnd();
             }
 
             @Override
@@ -139,24 +106,46 @@ public class PolygonDrawer extends JFrame {
         });
     }
 
+    private void drawPolygon(GL2 gl2) {
+        if (points.size() == 0) return;
+        if (points.size() == 1) {
+            Line line = new Line(points.get(0), pointing, BLACK);
+            LineDrawer.drawLine(gl2, line);
+            return;
+        }
+        var list = new ArrayList<>(points);
+        if (pointing != null) list.add(pointing);
+        PolyDrawer.fillPoly(list, gl2);
+    }
+
+
+    private void drawLines(GL2 gl2) {
+        List<Point> pointsExtended = new ArrayList<>(points);
+        if (pointing != null) pointsExtended.add(pointing);
+        PolyDrawer.encirclePoly(pointsExtended, gl2);
+    }
+
+
     private void addNewTriangleListener() {
         glCanvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!isItInState) {
+                    if (convexity && !willPolygonRemainConvex(points, e.getX(), e.getY())) return;
+
                     if (points.size() == 0) {
                         points.add(new Point(e.getX(), e.getY()));
                         pointing = new Point(e.getX(), e.getY());
                         return;
                     }
-                    if (convexity && !convexityCheck(points, e.getX(), e.getY())) return;
 
                     if (pointing != null) points.add(pointing);
                     pointing = new Point(e.getX(), e.getY());
 
                     glCanvas.display();
-                } else
-                    convexityCheck(points, e.getX(), e.getY());
+                } else {
+                    System.out.println("Point x=" + e.getX() + ", y=" + e.getY() + (isPointInsideOfPolygone(points, e.getX(), e.getY()) ? " IS " : " IS NOT ") + "inside of polygon");
+                }
             }
         });
 
@@ -182,59 +171,31 @@ public class PolygonDrawer extends JFrame {
                             System.out.println("Not possible in this state");
                             break;
                         }
-                        if (convexity) {
-                            convexity = false;
-                            break;
-                        }
-                        if (convexityCheck(points)) {
+                        if (!isPolygonConvex(points)) {
                             System.out.println("Not possible, current polygone not convex");
                             break;
                         }
-                        convexity = true;
+                        convexity = !convexity;
                         break;
+
                     case VK_P:
                         if (!isItInState) fill = !fill;
                         else System.out.println("Not possible in this state");
                         break;
+
                     case VK_N:
                         pointing = null;
                         if (isItInState) points.clear();
                         isItInState = !isItInState;
                         break;
+
+                    case VK_S:
+                        mySpecialState = !mySpecialState;
                 }
                 glCanvas.display();
             }
         });
     }
 
-    private boolean convexityCheck(List<Point> points) {
-        boolean isInside = checker(points, points.get(0).getX(), points.get(0).getY());
-        System.out.println("polygon" + (isInside ? " IS " : " IS NOT ") + "convex.");
-        return isInside;
-    }
 
-    private boolean convexityCheck(List<Point> points, int x, int y) {
-        boolean isInside = checker(points, x, y);
-        System.out.println("Point x=" + x + ", y=" + y + (isInside ? " IS " : " IS NOT ") + "inside of polygon");
-        return isInside;
-    }
-
-    private boolean checker(List<Point> points, int x, int y) {
-        double direction = 0;
-
-        for (int i = 0; i < points.size(); i++) {
-            Point first = points.get(i);
-            Point second = points.get((i + 1) % points.size());
-
-            Vector edge = new Vector(second.getX() - first.getX(), second.getY() - first.getY(), 0);
-            Vector connect = new Vector(x - second.getX(), y - second.getY(), 0);
-
-            double product = connect.nVectorProduct(edge).get(2);
-
-            if (direction < 0 && product > 0 || direction > 0 && product < 0)
-                return false;
-            direction = product != 0 ? product : direction;
-        }
-        return true;
-    }
 }
