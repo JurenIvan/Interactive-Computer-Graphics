@@ -68,21 +68,16 @@ public class PolyDrawer {
             if (ymin > polyElem.vrh.getY()) ymin = polyElem.vrh.getY();
             if (ymax < polyElem.vrh.getY()) ymax = polyElem.vrh.getY();
         }
-        for (y = ymin; y <= ymax; y++) {
+        for (y = ymin ; y < ymax; y++) {
 
             L = xmin;
             D = xmax;
             i0 = n - 1;
             for (i = 0; i < n; i0 = i++) {
                 if (polyElements[i0].brid.a == 0) {
-                    if (polyElements[i0].vrh.getY() == y) {
-                        if (polyElements[i0].vrh.getX() < polyElements[i].vrh.getX()) {
-                            L = polyElements[i0].vrh.getX();
-                            D = polyElements[i].vrh.getX();
-                        } else {
-                            L = polyElements[i].vrh.getX();
-                            D = polyElements[i0].vrh.getX();
-                        }
+                    if (polyElements[i0].vrh.getY() == y ) {
+                        L = Math.min(polyElements[i0].vrh.getX(), polyElements[i].vrh.getX());
+                        D = Math.max(polyElements[i0].vrh.getX(), polyElements[i].vrh.getX());
                         break;
                     }
                 } else {
