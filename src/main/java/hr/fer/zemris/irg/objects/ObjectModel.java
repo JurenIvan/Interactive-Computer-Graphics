@@ -66,19 +66,17 @@ public class ObjectModel {
 
     private void scaleVertices(List<Vertex3D> vertices, double factor) {
         for (Vertex3D vertex : vertices) {
-            double[] points = vertex.getCords();
-            points[0] *= factor;
-            points[1] *= factor;
-            points[2] *= factor;
+            vertex.setX(vertex.getX() * factor);
+            vertex.setY(vertex.getY() * factor);
+            vertex.setZ(vertex.getZ() * factor);
         }
     }
 
     private static void translateVertices(List<Vertex3D> vertices, double xTranslation, double yTranslation, double zTranslation) {
         for (Vertex3D vertex : vertices) {
-            double[] points = vertex.getCords();
-            points[0] += xTranslation;
-            points[1] += yTranslation;
-            points[2] += zTranslation;
+            vertex.setX(vertex.getX() + xTranslation);
+            vertex.setY(vertex.getY() + yTranslation);
+            vertex.setZ(vertex.getZ() + zTranslation);
         }
     }
 
