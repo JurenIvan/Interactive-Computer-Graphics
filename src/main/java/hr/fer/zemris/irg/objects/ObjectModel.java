@@ -132,7 +132,19 @@ public class ObjectModel {
     }
 
 
-//works for convex
+    public List<Vertex3D> getVerticesOfFace(Face3D face3D) {
+        return List.of(vertices.get(face3D.getX0() - 1), vertices.get(face3D.getX1() - 1), vertices.get(face3D.getX2() - 1));
+    }
+
+    public List<Face3D> getFaces() {
+        return faces;
+    }
+
+    public List<Vertex3D> getVertices() {
+        return vertices;
+    }
+
+    //works for convex
 //    public Boolean calculatePosition(Vertex3D point) {
 //        Boolean inside = TRUE;
 //        for (var face : faces) {
