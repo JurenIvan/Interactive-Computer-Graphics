@@ -4,6 +4,7 @@ import hr.fer.zemris.irg.math.BaricentricKords;
 import hr.fer.zemris.irg.math.vector.IVector;
 import hr.fer.zemris.irg.math.vector.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Boolean.TRUE;
@@ -85,9 +86,10 @@ public class ObjectModel {
     }
 
     public Boolean calculatePosition(Vertex3D point) {
+        List<IVector> intersectionsList = new ArrayList<>();
         int intersections = 0;
         Vector p0 = new Vector(point.getCords(), true, false);
-        Vector unit = new Vector(3, 5, 7);
+        Vector unit = new Vector(1, 0, 0);
 
         for (Face3D face : faces) {
 
@@ -96,12 +98,17 @@ public class ObjectModel {
             double s = -(fc.getA() * point.getX() + fc.getB() * point.getY() + fc.getC() * point.getZ() + fc.getD()) / (norm.scalarProduct(unit));
             if (s < 0) continue;
             IVector intersectionPoint = p0.nAdd(unit.nScalarMultiply(s));
+            if (intersectionsList.stream().anyMatch(e -> e.nSub(intersectionPoint).norm() < 1e-6))
+//            if (intersectionsList.contains(intersectionPoint))
+                continue;
 
+            intersectionsList.add(intersectionPoint);
             Boolean onAFaceResult = onAFace(intersectionPoint, face);
             if (onAFaceResult == TRUE) intersections++;
 
             if (onAFaceResult == null) {
                 if (onAFace(p0, face) == TRUE || onAFace(p0, face) == null) return null;
+                else intersections++;
             }
         }
         return intersections % 2 == 1;
