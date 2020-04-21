@@ -150,7 +150,10 @@ public class BresenhamLines extends JFrame {
         glCanvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_K) cutOff = !cutOff;
+                if (e.getKeyCode() == KeyEvent.VK_K) {
+                    cutOff = !cutOff;
+                    glCanvas.display();
+                }
             }
         });
     }
@@ -159,7 +162,10 @@ public class BresenhamLines extends JFrame {
         glCanvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_O) control = !control;
+                if (e.getKeyCode() == KeyEvent.VK_O) {
+                    control = !control;
+                    glCanvas.display();
+                }
             }
         });
     }
