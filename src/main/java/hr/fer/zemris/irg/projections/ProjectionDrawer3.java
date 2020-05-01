@@ -1,9 +1,7 @@
-package hr.fer.zemris.irg;
+package hr.fer.zemris.irg.projections;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
-import hr.fer.zemris.irg.math.IRG;
 import hr.fer.zemris.irg.math.matrix.IMatrix;
 import hr.fer.zemris.irg.math.vector.IVector;
 import hr.fer.zemris.irg.math.vector.Vector;
@@ -23,12 +21,14 @@ import static com.jogamp.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static com.jogamp.opengl.GL.GL_LINE_LOOP;
 import static com.jogamp.opengl.GL2.GL_PROJECTION;
 import static hr.fer.zemris.irg.color.Color.RED;
+import static hr.fer.zemris.irg.math.IRG.buildFrustumMatrix;
+import static hr.fer.zemris.irg.math.IRG.lookAtMatrix;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.event.KeyEvent.*;
 import static java.lang.Math.atan;
 import static java.lang.Math.sin;
 
-public class ProjectionDrawer extends JFrame {
+public class ProjectionDrawer3 extends JFrame {
 
     private static final String STANDARD_PATH_TO_RESOURCES = "src/main/resources/";
 
@@ -40,24 +40,21 @@ public class ProjectionDrawer extends JFrame {
     private double increment = 1;
     private double r = 1 / sin(angle);
 
-    private double near = 1;
-    private double far = 100;
-
-
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private ObjectModel objectModel;
 
     public static void main(String[] args) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(STANDARD_PATH_TO_RESOURCES + args[0]));
-        SwingUtilities.invokeLater(() -> new ProjectionDrawer(lines));
+        SwingUtilities.invokeLater(() -> new ProjectionDrawer3(lines));
     }
 
-    public ProjectionDrawer(List<String> lines) {
+    public ProjectionDrawer3(List<String> lines) {
         initLookVariables();
         objectModel = ObjectModel.parse(lines);
         objectModel.normalize();
+
         setVisible(true);
-        setSize(800, 600);
+        setSize(640, 480);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().add(glCanvas, CENTER);
@@ -91,7 +88,6 @@ public class ProjectionDrawer extends JFrame {
             @Override
             public void display(GLAutoDrawable glAutoDrawable) {
                 GL2 gl2 = glAutoDrawable.getGL().getGL2();
-                GLU glu = GLU.createGLU(gl2);
 
                 gl2.glClearColor(0, 1, 0, 0);
                 gl2.glClear(GL_COLOR_BUFFER_BIT);
@@ -100,21 +96,10 @@ public class ProjectionDrawer extends JFrame {
                 double x = r * Math.cos(Math.toRadians(angle));
                 double y = 4;
                 double z = r * Math.sin(Math.toRadians(angle));
-//
-                glu.gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-//                for (var face : objectModel.getFaces()) {
-//                    gl2.glBegin(GL_LINE_LOOP);
-//                    gl2.glColor3i(RED.getR(), RED.getG(), RED.getB());
-//                    for (var vertices : objectModel.getVerticesOfFace(face))
-//                        gl2.glVertex3d(vertices.getX(), vertices.getY(), vertices.getZ());
-//
-//                    gl2.glEnd();
-//                }
-//                gl2.glPopMatrix();
 
-                IMatrix tp = IRG.lookAtMatrix(new Vector(x, y, z), new Vector(0, 0, 0), new Vector(0, 1, 0));
-                IMatrix pr = IRG.buildFrustumMatrix(-0.5, 0.5, -0.5, 0.5, 1, 100);
-                IMatrix m = tp.nMultiply(pr);
+                IMatrix lookAtMatrix = lookAtMatrix(new Vector(x, y, z), new Vector(0, 0, 0), new Vector(0, 1, 0));
+                IMatrix frustumMatrix = buildFrustumMatrix(-0.5, 0.5, -0.5, 0.5, 1, 100);
+                IMatrix m = lookAtMatrix.nMultiply(frustumMatrix);
 
                 for (var face : objectModel.getFaces()) {
                     gl2.glBegin(GL_LINE_LOOP);
@@ -131,19 +116,9 @@ public class ProjectionDrawer extends JFrame {
             @Override
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 GL2 gl2 = glAutoDrawable.getGL().getGL2();
-                GLU glu = GLU.createGLU(gl2);
-
                 gl2.glMatrixMode(GL_PROJECTION);
                 gl2.glLoadIdentity();
-
-                //   gl2.glFrustum(-0.5, 0.5, -0.5, 0.5, 1.0, 100.0);
-
-//                double fovy = 2 * Math.toDegrees(Math.atan(1 / (2 * near)));
-//                double aspect = glAutoDrawable.getSurfaceWidth() / (double) glAutoDrawable.getSurfaceHeight();
-//                glu.gluPerspective(fovy, aspect, near, far);
-
-                gl2.glMatrixMode(GL2.GL_MODELVIEW);
-                gl2.glViewport(0, 0, width, height); // slika preko cijelog prozora
+                gl2.glViewport(0, 0, width, height);
             }
         });
     }
@@ -177,7 +152,7 @@ public class ProjectionDrawer extends JFrame {
 
     private void initLookVariables() {
         increment = 1;
-        angle = Math.toDegrees(atan(1 / 3.0));
+        angle = Math.toDegrees(atan(1 / 3.50));
         r = 1 / sin(Math.toRadians(angle));
     }
 }
