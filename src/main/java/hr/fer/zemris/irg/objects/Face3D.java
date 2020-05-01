@@ -58,4 +58,8 @@ public class Face3D {
     public int getX2() {
         return x2;
     }
+
+    public void resetCoefficients() {
+        this.faceCoeficient = null;
+    }
 }

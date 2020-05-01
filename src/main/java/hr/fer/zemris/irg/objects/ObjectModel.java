@@ -54,6 +54,7 @@ public class ObjectModel {
 
         translateVertices(vertices, -xAvg, -yAvg, -zAvg);
         scaleVertices(vertices, 2 / m);
+        faces.forEach(Face3D::resetCoefficients);
         return this;
     }
 
