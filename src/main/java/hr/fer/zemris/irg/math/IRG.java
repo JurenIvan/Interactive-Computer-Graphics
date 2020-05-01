@@ -4,11 +4,13 @@ import hr.fer.zemris.irg.math.matrix.IMatrix;
 import hr.fer.zemris.irg.math.matrix.Matrix;
 import hr.fer.zemris.irg.math.vector.IVector;
 
+import java.util.List;
+
 public class IRG {
 
     public static IMatrix translate3D(double dx, double dy, double dz) {
         IMatrix matrix = new Matrix(4, 4);
-        for (int i = 0; i < 4; i++) matrix.set(i,i,1);
+        for (int i = 0; i < 4; i++) matrix.set(i, i, 1);
         matrix.set(3, 0, -dx);
         matrix.set(3, 1, -dy);
         matrix.set(3, 2, -dz);
@@ -66,5 +68,15 @@ public class IRG {
         matrix[2][3] = -2 * f * n / (f - n);
 
         return new Matrix(4, 4, matrix, true);
+    }
+
+    public static boolean isAntiClockwise(List<IVector> points) {
+        IVector v1 = points.get(1).nSub(points.get(0));
+        IVector v2 = points.get(2).nSub(points.get(1));
+
+        v1.set(2, 0);
+        v2.set(2, 0);
+
+        return v1.nVectorProduct(v2).get(2) > 0;
     }
 }

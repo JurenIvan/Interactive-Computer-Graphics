@@ -141,8 +141,22 @@ public class ObjectModel {
         return faces;
     }
 
-    public List<Vertex3D> getVertices() {
-        return vertices;
+    public Boolean algorithm1(Face3D face3D, IVector eye) {
+        FaceCoeficient fc = face3D.calculateCoefficients(vertices);
+        return fc.getA() * eye.get(0) + fc.getB() * eye.get(1) + fc.getC() * eye.get(2) + fc.getD() > 0;
+    }
+
+    public Boolean algorithm2(Face3D face3D, IVector eye) {
+        List<Vertex3D> points = getVerticesOfFace(face3D);
+        double[] c = new double[3];
+        c[0] = (points.get(0).getX() + points.get(1).getX() + points.get(2).getX()) / 3;
+        c[1] = (points.get(0).getY() + points.get(1).getY() + points.get(2).getY()) / 3;
+        c[2] = (points.get(0).getZ() + points.get(1).getZ() + points.get(2).getZ()) / 3;
+
+        IVector e = (new Vector(c).sub(eye)).scalarMultiply(-1);
+        IVector n = face3D.calculateCoefficients(vertices).toVector().copyPart(3);
+
+        return n.scalarProduct(e) > 0;
     }
 
     //works for convex
