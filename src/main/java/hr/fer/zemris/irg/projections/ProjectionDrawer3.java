@@ -153,7 +153,7 @@ public class ProjectionDrawer3 extends JFrame {
 
     private void initLookVariables() {
         increment = 1;
-        angle = Math.toDegrees(atan(1 / 3.50));
+        angle = Math.toDegrees(atan(1 / 3.00));
         r = 1 / sin(Math.toRadians(angle));
     }
 }
