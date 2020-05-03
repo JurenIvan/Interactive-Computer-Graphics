@@ -46,4 +46,20 @@ public class Face3D {
     public String toOBJ() {
         return format("f %s %s %s", x0, x1, x2);
     }
+
+    public int getX0() {
+        return x0;
+    }
+
+    public int getX1() {
+        return x1;
+    }
+
+    public int getX2() {
+        return x2;
+    }
+
+    public void resetCoefficients() {
+        this.faceCoeficient = null;
+    }
 }

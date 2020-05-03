@@ -1,5 +1,7 @@
 package hr.fer.zemris.irg.objects;
 
+import hr.fer.zemris.irg.math.vector.Vector;
+
 import static java.lang.String.format;
 
 public class FaceCoeficient {
@@ -35,5 +37,9 @@ public class FaceCoeficient {
     @Override
     public String toString() {
         return format("Plane{a=%s, b=%s, c=%s, d=%s}", a, b, c, d);
+    }
+
+    public Vector toVector() {
+        return new Vector(a, b, c, d);
     }
 }

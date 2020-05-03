@@ -24,15 +24,24 @@ public class BaricentricKords {
         IVector c = new Vector(numbers.get(6), numbers.get(7), numbers.get(8));
 
         IVector t = Vector.parseSimple("3 4 0");
+
+        var baricentricVector = calculateBaricentricCords(a, b, c, t);
+
+        System.out.println(" Baricentricne koordinate su : (" + baricentricVector.get(0) + "," + baricentricVector.get(1) + "," + baricentricVector.get(2) + "). ");
+    }
+
+    public static Vector calculateBaricentricCords(IVector a, IVector b, IVector c, IVector plane) {
+
         double pov = b.nSub(a).nVectorProduct(c.nSub(a)).norm() / 2.0;
-        double povA = b.nSub(t).nVectorProduct(c.nSub(t)).norm() / 2.0;
-        double povB = a.nSub(t).nVectorProduct(c.nSub(t)).norm() / 2.0;
-        double povC = a.nSub(t).nVectorProduct(b.nSub(t)).norm() / 2.0;
+
+        double povA = b.nSub(plane).nVectorProduct(c.nSub(plane)).norm() / 2.0;
+        double povB = a.nSub(plane).nVectorProduct(c.nSub(plane)).norm() / 2.0;
+        double povC = a.nSub(plane).nVectorProduct(b.nSub(plane)).norm() / 2.0;
 
         double t1 = povA / pov;
         double t2 = povB / pov;
         double t3 = povC / pov;
 
-        System.out.println(" Baricentricne koordinate su : (" + t1 + "," + t2 + "," + t3 + "). ");
+        return new Vector(t1, t2, t3);
     }
 }
