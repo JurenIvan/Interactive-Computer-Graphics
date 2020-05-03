@@ -32,7 +32,7 @@ public class ProjectionDrawer extends JFrame {
         GLProfile.initSingleton();
     }
 
-    private double angle = atan(1 / 3f);
+    private double angle = atan(1 / 3.0);
     private double increment = 1;
     private double r = 1 / sin(angle);
 

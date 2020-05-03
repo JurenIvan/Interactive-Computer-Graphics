@@ -32,7 +32,7 @@ public class ProjectionDrawer2 extends JFrame {
         GLProfile.initSingleton();
     }
 
-    private double angle = atan(1 / 3f);
+    private double angle = atan(1 / 3.0);
     private double increment = 1;
     private double r = 1 / sin(angle);
 
@@ -119,7 +119,7 @@ public class ProjectionDrawer2 extends JFrame {
 
                 double fovy = 2 * Math.toDegrees(Math.atan(1 / (2 * near)));
                 double aspect = glAutoDrawable.getSurfaceWidth() / (double) glAutoDrawable.getSurfaceHeight();
-                glu.gluPerspective(fovy, aspect, near, far);
+                glu.gluPerspective(fovy, 1, near, far);
 
                 gl2.glMatrixMode(GL2.GL_MODELVIEW);
                 gl2.glViewport(0, 0, width, height);

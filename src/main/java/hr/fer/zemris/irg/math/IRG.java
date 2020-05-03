@@ -27,13 +27,12 @@ public class IRG {
     }
 
     public static IMatrix lookAtMatrix(IVector eye, IVector center, IVector viewUp) {
-        double[][] matrix = new double[4][4];
-
         IVector f = center.nSub(eye).normalize();
         IVector u = viewUp.nNormalize();
         IVector s = f.nVectorProduct(u).normalize();
         u = s.nVectorProduct(f).nNormalize();
 
+        double[][] matrix = new double[4][4];
         matrix[0][0] = s.get(0);
         matrix[0][1] = u.get(0);
         matrix[0][2] = -f.get(0);
@@ -54,20 +53,19 @@ public class IRG {
     }
 
     public static IMatrix buildFrustumMatrix(double l, double r, double b, double t, double n, double f) {
-        double[][] matrix = new double[4][4];
+        Matrix m = new Matrix(4, 4);
 
+        m.set(0, 0, 2 * n / (r - l));
+        m.set(1, 1, 2 * n / (t - b));
 
-        matrix[0][0] = 2 * n / (r - l);
-        matrix[1][1] = 2 * n / (t - b);
+        m.set(2, 0, (r + l) / (r - l));
+        m.set(2, 1, (t + b) / (t - b));
+        m.set(2, 2, -((f + n) / (f - n)));
+        m.set(2, 3, -1);
 
-        matrix[0][2] = (r + l) / (r - l);
-        matrix[1][2] = (t + b) / (t - b);
-        matrix[2][2] = -((f + n) / (f - n));
-        matrix[3][2] = -1;
+        m.set(3, 2, -2 * f * n / (f - n));
 
-        matrix[2][3] = -2 * f * n / (f - n);
-
-        return new Matrix(4, 4, matrix, true);
+        return m;
     }
 
     public static boolean isAntiClockwise(List<IVector> points) {

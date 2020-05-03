@@ -6,6 +6,7 @@ import hr.fer.zemris.irg.math.matrix.IMatrix;
 import hr.fer.zemris.irg.math.vector.IVector;
 import hr.fer.zemris.irg.math.vector.Vector;
 import hr.fer.zemris.irg.objects.ObjectModel;
+import hr.fer.zemris.irg.objects.Vertex3D;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -36,7 +37,7 @@ public class ProjectionDrawer3 extends JFrame {
         GLProfile.initSingleton();
     }
 
-    private double angle = atan(1 / 3f);
+    private double angle = atan(1 / 3.0);
     private double increment = 1;
     private double r = 1 / sin(angle);
 
@@ -54,7 +55,7 @@ public class ProjectionDrawer3 extends JFrame {
         objectModel.normalize();
 
         setVisible(true);
-        setSize(640, 480);
+        setSize(800, 600);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().add(glCanvas, CENTER);
@@ -97,17 +98,17 @@ public class ProjectionDrawer3 extends JFrame {
                 double y = 4;
                 double z = r * Math.sin(Math.toRadians(angle));
 
-                IMatrix lookAtMatrix = lookAtMatrix(new Vector(x, y, z), new Vector(0, 0, 0), new Vector(0, 1, 0));
-                IMatrix frustumMatrix = buildFrustumMatrix(-0.5, 0.5, -0.5, 0.5, 1, 100);
-                IMatrix m = lookAtMatrix.nMultiply(frustumMatrix);
+                IMatrix tp = lookAtMatrix(new Vector(x, y, z), new Vector(0, 0, 0), new Vector(0, 1, 0));
+                IMatrix pr = buildFrustumMatrix(-0.5, 0.5, -0.5, 0.5, 1, 100);
+                IMatrix m = tp.nMultiply(pr);
 
                 for (var face : objectModel.getFaces()) {
                     gl2.glBegin(GL_LINE_LOOP);
                     gl2.glColor3i(RED.getR(), RED.getG(), RED.getB());
-                    for (var vertices : objectModel.getVerticesOfFace(face)) {
-                        IVector wrapped = new Vector(vertices.getX(), vertices.getY(), vertices.getZ(), 1);
-                        IVector projected = wrapped.toRowMatrix(false).nMultiply(m).toVector(false).nFromHomogeneus();
-                        gl2.glVertex2f((float) projected.get(0), (float) projected.get(1));
+                    for (Vertex3D vertices : objectModel.getVerticesOfFace(face)) {
+                        IVector v = new Vector(vertices.getX(), vertices.getY(), vertices.getZ(), 1);
+                        IVector tv = v.toRowMatrix(false).nMultiply(m).toVector(false).nFromHomogeneus();
+                        gl2.glVertex2d(tv.get(0), tv.get(1));
                     }
                     gl2.glEnd();
                 }

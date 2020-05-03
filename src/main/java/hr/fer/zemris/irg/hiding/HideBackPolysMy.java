@@ -1,4 +1,4 @@
-package hr.fer.zemris.irg;
+package hr.fer.zemris.irg.hiding;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
