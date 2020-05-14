@@ -18,7 +18,10 @@ public class ColorColoring extends ColoringConsumer {
         for (int y = 0; y < div.length; y++) {
             for (int x = 0; x < div[0].length; x++) {
                 int n = div[y][x];
-                gl2.glColor3d(n / (double) maxIterations, 1 - n / (double) maxIterations / 2, 0.8 - n / (double) maxIterations / 3);
+                if (n == -1)
+                    gl2.glColor3d(0, 0, 0);
+                else
+                    gl2.glColor3d(n / (double) maxIterations, 1 - n / (double) maxIterations / 2, 0.8 - n / (double) maxIterations / 3);
                 gl2.glVertex2i(x, y);
             }
         }
