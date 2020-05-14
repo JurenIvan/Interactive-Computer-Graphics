@@ -1,7 +1,7 @@
-package hr.fer.zemris.lsystems;
+package hr.fer.zemris.irg.lsystems;
 
-import hr.fer.zemris.lsystems.commands.*;
-import hr.fer.zemris.lsystems.painter.Painter;
+import hr.fer.zemris.irg.lsystems.commands.*;
+import hr.fer.zemris.irg.lsystems.painter.Painter;
 
 import java.awt.*;
 import java.util.ArrayList;

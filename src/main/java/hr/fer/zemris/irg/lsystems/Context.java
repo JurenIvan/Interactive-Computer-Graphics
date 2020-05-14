@@ -1,4 +1,4 @@
-package hr.fer.zemris.lsystems;
+package hr.fer.zemris.irg.lsystems;
 
 import java.util.Stack;
 

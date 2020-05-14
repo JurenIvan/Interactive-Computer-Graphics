@@ -1,11 +1,11 @@
-package hr.fer.zemris.lsystems.commands;
+package hr.fer.zemris.irg.lsystems.commands;
 
 import java.awt.Color;
 
-import hr.fer.zemris.lsystems.Command;
-import hr.fer.zemris.lsystems.Context;
-import hr.fer.zemris.lsystems.painter.Painter;
-import hr.fer.zemris.lsystems.TurtleState;
+import hr.fer.zemris.irg.lsystems.Command;
+import hr.fer.zemris.irg.lsystems.Context;
+import hr.fer.zemris.irg.lsystems.painter.Painter;
+import hr.fer.zemris.irg.lsystems.TurtleState;
 
 /**
  * Class used as a implementation of {@link Command} interface.

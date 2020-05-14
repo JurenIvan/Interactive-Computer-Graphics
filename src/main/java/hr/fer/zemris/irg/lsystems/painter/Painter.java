@@ -1,4 +1,4 @@
-package hr.fer.zemris.lsystems.painter;
+package hr.fer.zemris.irg.lsystems.painter;
 
 import java.awt.*;
 import java.util.ArrayList;

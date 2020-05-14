@@ -223,4 +223,15 @@ public class Complex {
         return new Complex(re, im);
     }
 
+    public double getRe() {
+        return re;
+    }
+
+    public double getIm() {
+        return im;
+    }
+
+    public double squaredModule() {
+        return re * re + im * im;
+    }
 }
