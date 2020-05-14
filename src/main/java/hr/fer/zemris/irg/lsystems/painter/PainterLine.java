@@ -3,6 +3,7 @@ package hr.fer.zemris.irg.lsystems.painter;
 import java.awt.*;
 
 public class PainterLine {
+
     double x;
     double y;
     double x1;

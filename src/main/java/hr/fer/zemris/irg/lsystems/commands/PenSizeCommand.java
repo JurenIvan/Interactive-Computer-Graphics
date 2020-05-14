@@ -6,7 +6,7 @@ import hr.fer.zemris.irg.lsystems.painter.Painter;
 
 public class PenSizeCommand implements Command {
 
-    private double penSize;
+    private final double penSize;
 
     public PenSizeCommand(double penSize) {
         this.penSize = penSize;

@@ -2,9 +2,9 @@ package hr.fer.zemris.irg.lsystems.commands;
 
 import hr.fer.zemris.irg.lsystems.Command;
 import hr.fer.zemris.irg.lsystems.Context;
-import hr.fer.zemris.irg.lsystems.painter.Painter;
 import hr.fer.zemris.irg.lsystems.TurtleState;
 import hr.fer.zemris.irg.lsystems.Vector2D;
+import hr.fer.zemris.irg.lsystems.painter.Painter;
 
 /**
  * Class representing a implementation of {@link Command} interface.
@@ -20,7 +20,7 @@ public class SkipCommand implements Command {
     /**
      * Variable that says how big is move without leaving trail (no lines are drawn)
      */
-    private double skip;
+    private final double skip;
 
     /**
      * Constructor for {@link SkipCommand} that gets one double representing

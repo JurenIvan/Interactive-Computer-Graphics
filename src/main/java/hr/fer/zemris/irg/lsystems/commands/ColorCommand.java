@@ -18,7 +18,7 @@ public class ColorCommand implements Command {
     /**
      * Variable of type color
      */
-    private Color color;
+    private final Color color;
 
     /**
      * Constructor for {@link ColorCommand} that takes color as a argument and saves

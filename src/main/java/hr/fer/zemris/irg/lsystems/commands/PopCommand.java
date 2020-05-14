@@ -6,18 +6,17 @@ import hr.fer.zemris.irg.lsystems.painter.Painter;
 
 /**
  * Class used as a implementation of {@link Command} interface.
- * 
+ * <p>
  * Has {@link #execute(Context, Painter)} method which pops the current state
  * out of provided {@link Context}
- * 
- * @author juren
  *
+ * @author juren
  */
 public class PopCommand implements Command {
 
-	@Override
-	public void execute(Context ctx, Painter painter) {
-		ctx.popState();
-	}
+    @Override
+    public void execute(Context ctx, Painter painter) {
+        ctx.popState();
+    }
 
 }

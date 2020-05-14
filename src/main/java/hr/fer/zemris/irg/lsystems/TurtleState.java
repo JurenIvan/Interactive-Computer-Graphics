@@ -123,11 +123,6 @@ public class TurtleState {
         this.efectiveLenght = efectiveLenght;
     }
 
-    /**
-     * Standard setter for color
-     *
-     * @param color to be set.
-     */
     public void setColor(Color color2) {
         this.color = color2;
     }

@@ -3,8 +3,8 @@ package hr.fer.zemris.irg.lsystems.commands;
 
 import hr.fer.zemris.irg.lsystems.Command;
 import hr.fer.zemris.irg.lsystems.Context;
-import hr.fer.zemris.irg.lsystems.painter.Painter;
 import hr.fer.zemris.irg.lsystems.TurtleState;
+import hr.fer.zemris.irg.lsystems.painter.Painter;
 
 /**
  * Class used as a implementation of {@link Command} interface.
@@ -20,7 +20,7 @@ public class ScaleCommand implements Command {
      * variable that saves double representing factor that is later used in
      * {@link #execute(Context, Painter)}
      */
-    private double factor;
+    private final double factor;
 
     /**
      * Constructor that gets {@link #factor} and saves it.

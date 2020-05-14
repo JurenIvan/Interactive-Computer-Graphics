@@ -40,7 +40,7 @@ public class LSystems extends JFrame {
     }
 
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
-    private Painter painter = new Painter();
+    private final Painter painter = new Painter();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LSystems::new);
@@ -103,7 +103,7 @@ public class LSystems extends JFrame {
                 for (PainterLine line : painter.getLines()) {
                     var color = line.getColor();
                     gl2.glColor3d(color.getRed(), color.getGreen(), color.getBlue());
-                    gl2.glLineWidth((float) line.getPenSize()*10);
+                    gl2.glLineWidth((float) line.getPenSize() * 10);
                     gl2.glBegin(GL_LINE_STRIP);
                     gl2.glVertex2d(line.getX() * glAutoDrawable.getSurfaceWidth(), line.getY() * glAutoDrawable.getSurfaceHeight());
                     gl2.glVertex2d(line.getX1() * glAutoDrawable.getSurfaceWidth(), line.getY1() * glAutoDrawable.getSurfaceHeight());

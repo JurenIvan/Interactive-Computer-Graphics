@@ -91,9 +91,9 @@ public class LSystemBuilderImpl implements LSystemBuilder {
     private LSystemBuilder getCommandPart(String line) {
         char arg0 = line.split("\\s+")[1].charAt(0);
         StringBuilder arg1 = new StringBuilder();
-        String splitted[] = line.split("\\s+");
+        String[] splitted = line.split("\\s+");
         for (int i = 2; i < splitted.length; i++) {
-            arg1.append(splitted[i] + " ");
+            arg1.append(splitted[i]).append(" ");
         }
         return registerCommand(arg0, arg1.toString());
     }
@@ -108,7 +108,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
             sb.append(splitted[i]);
         }
         String secondPart = sb.toString().replaceAll("\\s+", "");
-        String numbers[] = secondPart.split("/");
+        String[] numbers = secondPart.split("/");
         if (Double.parseDouble(numbers[1]) == 0)
             throw new IllegalArgumentException("Division by zero doesn't make sence in this usecase.");
         return Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]);
@@ -195,9 +195,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 
     private class LSystemImpl implements LSystem {
 
-
-        private Context context;
-        private List<String> memoisation;
+        private final List<String> memoisation;
 
         public LSystemImpl() {
             memoisation = new ArrayList<>();
@@ -206,7 +204,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 
         @Override
         public void draw(int arg0, Painter arg1) {
-            context = new Context();
+            Context context = new Context();
             context.pushState(new TurtleState(origin.copy(), (new Vector2D(1, 0)).rotated(Math.toRadians(angle)),
                     Color.black, unitLength * (Math.pow(unitLengthDegreeScaler, arg0)), 0.7));
 
