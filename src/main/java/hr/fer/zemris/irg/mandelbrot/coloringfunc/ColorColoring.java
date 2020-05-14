@@ -15,12 +15,13 @@ public class ColorColoring extends ColoringConsumer {
     public void accept(short[][] div) {
         GL2 gl2 = glCanvas.getGL().getGL2();
         gl2.glBegin(GL_POINTS);
-        for (int i = 0; i < div.length; i++) {
-            for (int j = 0; j < div[0].length; j++) {
-                int n = div[i][j];
+        for (int y = 0; y < div.length; y++) {
+            for (int x = 0; x < div[0].length; x++) {
+                int n = div[y][x];
                 gl2.glColor3d(n / (double) maxIterations, 1 - n / (double) maxIterations / 2, 0.8 - n / (double) maxIterations / 3);
-                gl2.glVertex2i(i, j);
+                gl2.glVertex2i(x, y);
             }
         }
+        gl2.glEnd();
     }
 }

@@ -3,12 +3,12 @@ package hr.fer.zemris.irg;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
+import hr.fer.zemris.irg.mandelbrot.Complex;
 import hr.fer.zemris.irg.mandelbrot.StackEntry;
 import hr.fer.zemris.irg.mandelbrot.coloringfunc.BlackAndWhiteColoring;
 import hr.fer.zemris.irg.mandelbrot.coloringfunc.ColorColoring;
 import hr.fer.zemris.irg.mandelbrot.divergenefunc.CubicFunction;
 import hr.fer.zemris.irg.mandelbrot.divergenefunc.QuadraticFunction;
-import hr.fer.zemris.irg.mandelbrot.Complex;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -27,12 +27,13 @@ public class Mandelbrot extends JFrame {
         GLProfile.initSingleton();
     }
 
-    private static final int maxIterations = 128;
+    private static final int MAX_ITERATIONS = 128;
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private final Stack<StackEntry> stack = new Stack<>();
 
-    private Function<Complex, Short> divergeFunction = new QuadraticFunction(maxIterations);
-    private Consumer<short[][]> coloringConsumer = new BlackAndWhiteColoring(glCanvas, maxIterations);
+    private Function<Complex, Short> divergeFunction = new QuadraticFunction(MAX_ITERATIONS);
+    private Consumer<short[][]> coloringConsumer = new BlackAndWhiteColoring(glCanvas, MAX_ITERATIONS);
+
     private short[][] roots;
 
     public static void main(String[] args) {
@@ -41,7 +42,7 @@ public class Mandelbrot extends JFrame {
 
     public Mandelbrot() {
         setVisible(true);
-        setSize(400, 300);
+        setSize(1200, 800);
         stack.push(new StackEntry(-2, 1, -1.2, 1.2));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -102,28 +103,22 @@ public class Mandelbrot extends JFrame {
         });
     }
 
-    private Complex covertPointToComplex(int i, int j, StackEntry peek, int width, int height) {
-
-        double re = peek.uMin + (peek.uMax - peek.uMin) / width * i;
-        double im = peek.vMax - (peek.vMax - peek.vMin) / height * j;
-
-        return new Complex(re, im);
-    }
-
     private void addKeyboardListeners() {
         glCanvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == VK_B)
-                    coloringConsumer = new BlackAndWhiteColoring(glCanvas, maxIterations);
+                    coloringConsumer = new BlackAndWhiteColoring(glCanvas, MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_C)
-                    coloringConsumer = new ColorColoring(glCanvas, maxIterations);
+                    coloringConsumer = new ColorColoring(glCanvas, MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_1)
-                    divergeFunction = new QuadraticFunction(maxIterations);
+                    divergeFunction = new QuadraticFunction(MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_2)
-                    divergeFunction = new CubicFunction(maxIterations);
+                    divergeFunction = new CubicFunction(MAX_ITERATIONS);
+                else if (e.getKeyCode() == VK_X)
+                    stack.pop();        //todo
                 else if (e.getKeyCode() == VK_ESCAPE)
-                    stack.pop();
+                    stack.pop();        //todo
                 else {
                     System.err.println("Key not supported");
                     return;
@@ -146,16 +141,25 @@ public class Mandelbrot extends JFrame {
 
     private void refresh() {
         new Thread(() -> {
-            roots = new short[glCanvas.getSurfaceHeight()][glCanvas.getSurfaceWidth()];
-
-            int surfaceHeight = glCanvas.getSurfaceHeight();
             int surfaceWidth = glCanvas.getSurfaceWidth();
+            int surfaceHeight = glCanvas.getSurfaceHeight();
 
-            for (int i = 0; i < surfaceHeight; i++)
-                for (int j = 0; j < surfaceWidth; j++)
-                    roots[i][j] = divergeFunction.apply(covertPointToComplex(i, j, stack.peek(), surfaceWidth, surfaceHeight));
+            short[][] roots = new short[surfaceHeight][surfaceWidth];
 
+            for (int y = 0; y < surfaceHeight; y++)
+                for (int x = 0; x < surfaceWidth; x++)
+                    roots[y][x] = divergeFunction.apply(covertPointToComplex(x, y, stack.peek(), surfaceWidth, surfaceHeight));
+
+            this.roots = roots;
             glCanvas.display();
         }).start();
+    }
+
+    private Complex covertPointToComplex(int x, int y, StackEntry peek, int width, int height) {
+
+        double re = peek.uMin + (peek.uMax - peek.uMin) / width * x;
+        double im = peek.vMax - (peek.vMax - peek.vMin) / height * y;
+
+        return new Complex(re, im);
     }
 }

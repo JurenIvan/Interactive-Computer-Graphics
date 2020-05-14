@@ -17,7 +17,7 @@ public class CubicFunction implements Function<Complex, Short> {
         Complex c = Complex.ZERO;
         for (short i = 0; i < maxIterations; i++) {
             c = c.multiply(c).multiply(c).add(complex);
-            if (c.module() > 4) return i;
+            if (c.module() > 2) return i;
         }
         return -1;
     }
