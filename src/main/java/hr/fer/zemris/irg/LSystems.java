@@ -3,11 +3,11 @@ package hr.fer.zemris.irg;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
-import hr.fer.zemris.lsystems.LSystem;
-import hr.fer.zemris.lsystems.LSystemBuilder;
-import hr.fer.zemris.lsystems.LSystemBuilderImpl;
-import hr.fer.zemris.lsystems.painter.Painter;
-import hr.fer.zemris.lsystems.painter.PainterLine;
+import hr.fer.zemris.irg.lsystems.LSystem;
+import hr.fer.zemris.irg.lsystems.LSystemBuilder;
+import hr.fer.zemris.irg.lsystems.LSystemBuilderImpl;
+import hr.fer.zemris.irg.lsystems.painter.Painter;
+import hr.fer.zemris.irg.lsystems.painter.PainterLine;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
