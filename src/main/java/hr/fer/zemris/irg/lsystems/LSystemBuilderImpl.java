@@ -18,73 +18,21 @@ import java.util.Map;
  */
 public class LSystemBuilderImpl implements LSystemBuilder {
 
-    /**
-     * Constant representing default {@link #unitLength}
-     */
+
     private static final double DEFAULT_UNIT_LENGHT = 0.1;
-
-    /**
-     * Constant representing default {@link #unitLengthDegreeScaler}
-     */
     private static final double DEFAULT_UNIT_LENGHT_DEGREE_SCALER = 1;
-
-    /**
-     * Constant representing default {@link #angle}
-     */
     private static final double DEFAULT_ANGLE = 0;
-
-    /**
-     * Constant representing default {@link #origin}
-     */
     private static final Vector2D DEFAULT_ORIGIN = new Vector2D(0, 0);
-
-    /**
-     * Constant representing default {@link #axiom}
-     */
     private static final String DEFAULT_AXIOM = "";
-
-    /**
-     * Variable that saves angle towards positive x axis.
-     */
     private double angle;
-
-    /**
-     * Variable that saves string representing level 0 axiom.
-     */
     private String axiom;
-
-    /**
-     * Variable that saves number resembling scaling proportion of unitLeght needed
-     * due to growth of L-system.
-     */
     private double unitLengthDegreeScaler;
-
-    /**
-     * Variable that saves length of basic turtle move.
-     */
     private double unitLength;
-
-    /**
-     * Variable that saves point on canvas where the origin is.
-     */
     private Vector2D origin;
 
-    /**
-     * Dictionary where so called productions are saved. While developing full
-     * L-system expression, each char in axiom can be replaced with array of chars.
-     */
-    private Map<Character, String> registeredProductions;
+    private final Map<Character, String> registeredProductions;
+    private final Map<Character, Command> registeredCommands;
 
-    /**
-     * Dictionary where each character used in production of L-system have binded
-     * Command.
-     */
-    private Map<Character, Command> registeredCommands;
-
-    /**
-     * Default {@link LSystemBuilderImpl} constructor. Sets variables to predefined
-     * constants.
-     */
     public LSystemBuilderImpl() {
         this.unitLength = DEFAULT_UNIT_LENGHT;
         this.unitLengthDegreeScaler = DEFAULT_UNIT_LENGHT_DEGREE_SCALER;
@@ -140,14 +88,6 @@ public class LSystemBuilderImpl implements LSystemBuilder {
         return this;
     }
 
-    /**
-     * Part of parser whose job is to recognize line with command, parses it , and
-     * sends it to {@link #registerCommand(char, String)}
-     *
-     * @param line where string "command" is found
-     * @return {@link LSystemBuilder} so that multiple commands can be applied
-     * before {@link #build()}
-     */
     private LSystemBuilder getCommandPart(String line) {
         char arg0 = line.split("\\s+")[1].charAt(0);
         StringBuilder arg1 = new StringBuilder();
@@ -158,17 +98,6 @@ public class LSystemBuilderImpl implements LSystemBuilder {
         return registerCommand(arg0, arg1.toString());
     }
 
-    /**
-     * Part of parser whose job is to recognize line with "unitLengthDegreeScaler"
-     * parses it( it can be given in two ways,a unitLengthDegreeScaler and double or
-     * unitLengthDegreeScaler and double/double) and returns only double value.
-     *
-     * @param line where string "unitLengthDegreeScaler" is found
-     * @return {@link LSystemBuilder} so that multiple commands can be applied
-     * before {@link #build()}
-     * @throws NumberFormatException    if it cannot interpreted number
-     * @throws IllegalArgumentException if division with zero occurs while parsing expression
-     */
     private double getUnitLengthDegreeScalerFromLine(String line) {
         String[] splitted = line.split("\\s+");
         if (splitted.length == 2) {
@@ -207,7 +136,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
                     arg1Command = new SkipCommand(Double.parseDouble(splitted[1]));
                     break;
                 case "scale":
-                    arg1Command = new SkipCommand(Double.parseDouble(splitted[1]));
+                    arg1Command = new ScaleCommand(Double.parseDouble(splitted[1]));
                     break;
                 case "color":
                     arg1Command = new ColorCommand(Color.decode("#" + splitted[1]));
@@ -263,29 +192,13 @@ public class LSystemBuilderImpl implements LSystemBuilder {
         return this;
     }
 
-    /**
-     * Class resembling implementation of {@link LSystem} interface. Is able to
-     * generate axioms and to draw them. Has default constructor and
-     * {@link #draw(int, Painter)} and {@link #generate(int)} methods
-     *
-     * @author juren
-     */
+
     private class LSystemImpl implements LSystem {
 
-        /**
-         * Instance of {@link Context} needed for {@link #draw(int, Painter)} and
-         * {@link #generate(int)} methods.
-         */
+
         private Context context;
-        /**
-         * Collection of already calculated axioms so that every axiom level is
-         * calculated only once
-         */
         private List<String> memoisation;
 
-        /**
-         * Default constructor. Initializes collection used for memoisation.
-         */
         public LSystemImpl() {
             memoisation = new ArrayList<>();
             memoisation.add(axiom);
@@ -295,7 +208,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
         public void draw(int arg0, Painter arg1) {
             context = new Context();
             context.pushState(new TurtleState(origin.copy(), (new Vector2D(1, 0)).rotated(Math.toRadians(angle)),
-                    Color.black, unitLength * (Math.pow(unitLengthDegreeScaler, arg0)), 0.5));
+                    Color.black, unitLength * (Math.pow(unitLengthDegreeScaler, arg0)), 0.7));
 
             String whatToDo = generate(arg0);
             for (int i = 0; i < whatToDo.length(); i++) {
@@ -321,8 +234,11 @@ public class LSystemBuilderImpl implements LSystemBuilder {
                 }
                 sb.append(production);
             }
-            memoisation.add(arg0, sb.toString());
-            return sb.toString();
+            String production = sb.toString();
+            memoisation.add(arg0, production);
+            System.out.println(production);
+            return production;
+
         }
     }
 

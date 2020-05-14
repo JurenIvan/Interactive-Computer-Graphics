@@ -41,10 +41,6 @@ public class PainterLine {
         return color;
     }
 
-    public float getEffectiveLength() {
-        return effectiveLength;
-    }
-
     public double getPenSize() {
         return penSize;
     }

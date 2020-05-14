@@ -4,7 +4,6 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 import hr.fer.zemris.irg.lsystems.LSystem;
-import hr.fer.zemris.irg.lsystems.LSystemBuilder;
 import hr.fer.zemris.irg.lsystems.LSystemBuilderImpl;
 import hr.fer.zemris.irg.lsystems.painter.Painter;
 import hr.fer.zemris.irg.lsystems.painter.PainterLine;
@@ -12,6 +11,9 @@ import hr.fer.zemris.irg.lsystems.painter.PainterLine;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.jogamp.opengl.GL.GL_LINE_STRIP;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
@@ -27,12 +29,17 @@ import static java.awt.BorderLayout.CENTER;
  */
 public class LSystems extends JFrame {
 
+    private static final String PATH_TO_PLANT1 = "src/main/resources/lSystems/plant1.txt";
+    private static final String PATH_TO_PLANT2 = "src/main/resources/lSystems/plant2.txt";
+    private static final String PATH_TO_PLANT3 = "src/main/resources/lSystems/plant3.txt";
+    private static final String PATH_TO_PLANT4 = "src/main/resources/lSystems/plant4.txt";
+    private static String[] data;
+
     static {
         GLProfile.initSingleton();
     }
 
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
-    private LSystemBuilder lSystemBuilder = new LSystemBuilderImpl();
     private Painter painter = new Painter();
 
     public static void main(String[] args) {
@@ -40,8 +47,13 @@ public class LSystems extends JFrame {
     }
 
     public LSystems() {
+        try {
+            data = Files.readAllLines(Paths.get(PATH_TO_PLANT1)).toArray(new String[0]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setVisible(true);
-        setSize(1200, 800);
+        setSize(800, 800);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().add(glCanvas, CENTER);
@@ -59,7 +71,7 @@ public class LSystems extends JFrame {
 
     private void initGUI() {
         LSystem lSystem = createKochCurve2();
-        lSystem.draw(13, painter);
+        lSystem.draw(6, painter);
 
         glCanvas.requestFocusInWindow();
         addGLEventListener();
@@ -67,22 +79,6 @@ public class LSystems extends JFrame {
     }
 
     private static LSystem createKochCurve2() {
-        String[] data = ("origin                 0.5 0.0\n" +
-                "angle                  90\n" +
-                "unitLength             0.75\n" +
-                "unitLengthDegreeScaler 1.0 /2.05\n" +
-                "\n" +
-                "command F draw 1\n" +
-                "command + rotate 20\n" +
-                "command - rotate -20\n" +
-                "command [ push\n" +
-                "command ] pop\n" +
-                "command G color 00FF00\n" +
-                "\n" +
-                "axiom GB\n" +
-                "\n" +
-                "production B F[+B]F[-B]+B\n" +
-                "production F FF\n").split("\n");
         return new LSystemBuilderImpl().configureFromText(data).build();
     }
 
@@ -107,8 +103,8 @@ public class LSystems extends JFrame {
                 for (PainterLine line : painter.getLines()) {
                     var color = line.getColor();
                     gl2.glColor3d(color.getRed(), color.getGreen(), color.getBlue());
+                    gl2.glLineWidth((float) line.getPenSize()*10);
                     gl2.glBegin(GL_LINE_STRIP);
-                    gl2.glLineWidth((float) line.getPenSize());
                     gl2.glVertex2d(line.getX() * glAutoDrawable.getSurfaceWidth(), line.getY() * glAutoDrawable.getSurfaceHeight());
                     gl2.glVertex2d(line.getX1() * glAutoDrawable.getSurfaceWidth(), line.getY1() * glAutoDrawable.getSurfaceHeight());
                     gl2.glEnd();
@@ -123,7 +119,7 @@ public class LSystems extends JFrame {
                 gl2.glLoadIdentity();
 
                 GLU glu = new GLU();
-                glu.gluOrtho2D(0, width, height, 0);
+                glu.gluOrtho2D(0, width, 0, height);
 
                 gl2.glViewport(0, 0, width, height);
                 gl2.glMatrixMode(GL_MODELVIEW);
