@@ -63,6 +63,7 @@ public class ObjectModel {
         ObjectModel om = new ObjectModel();
         om.vertices = lines.stream().filter(e -> e.startsWith("v")).map(e -> e.trim().split(" ")).map(e -> Vertex3D.of(parseDouble(e[1]), parseDouble(e[2]), parseDouble(e[3]))).collect(toList());
         om.faces = lines.stream().filter(e -> e.startsWith("f")).map(e -> e.trim().split(" ")).map(e -> Face3D.of(Integer.parseInt(e[1]), Integer.parseInt(e[2]), Integer.parseInt(e[3]))).collect(toList());
+        om.calculateNormalsForVertices();
         return om;
     }
 
@@ -196,4 +197,19 @@ public class ObjectModel {
 //        }
 //        return true;
 //    }
+
+    public void calculateNormalsForVertices() {
+        for (int i = 0; i < vertices.size(); i++) {
+            IVector normal = new Vector(0, 0, 0);
+            int match = 0;
+            for (Face3D face : faces) {
+                if (face.containsVertice(i)) {
+                    match++;
+                    FaceCoeficient fc = face.calculateCoefficients(vertices);
+                    normal.add(new Vector(fc.getA(), fc.getB(), fc.getC()).normalize());
+                }
+            }
+            vertices.get(i).setNormal(normal.scalarMultiply(1.0 / match).normalize());
+        }
+    }
 }
