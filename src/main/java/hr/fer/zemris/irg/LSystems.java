@@ -9,6 +9,8 @@ import hr.fer.zemris.irg.lsystems.painter.Painter;
 import hr.fer.zemris.irg.lsystems.painter.PainterLine;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import static com.jogamp.opengl.GL.GL_LINE_STRIP;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import static java.awt.BorderLayout.CENTER;
+import static java.awt.event.KeyEvent.*;
 
 /**
  * Class that contains main method so it can be run and demonstrates
@@ -33,25 +36,21 @@ public class LSystems extends JFrame {
     private static final String PATH_TO_PLANT2 = "src/main/resources/lSystems/plant2.txt";
     private static final String PATH_TO_PLANT3 = "src/main/resources/lSystems/plant3.txt";
     private static final String PATH_TO_PLANT4 = "src/main/resources/lSystems/plant4.txt";
-    private static String[] data;
 
     static {
         GLProfile.initSingleton();
     }
 
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
-    private final Painter painter = new Painter();
+    private Painter painter = new Painter();
+    private int depth = 4;
+    private String pathSelected = PATH_TO_PLANT1;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LSystems::new);
     }
 
     public LSystems() {
-        try {
-            data = Files.readAllLines(Paths.get(PATH_TO_PLANT1)).toArray(new String[0]);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         setVisible(true);
         setSize(800, 800);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -70,16 +69,14 @@ public class LSystems extends JFrame {
     }
 
     private void initGUI() {
-        LSystem lSystem = createKochCurve2();
-        lSystem.draw(6, painter);
-
         glCanvas.requestFocusInWindow();
         addGLEventListener();
+        addKeyboardListeners();
         glCanvas.display();
     }
 
-    private static LSystem createKochCurve2() {
-        return new LSystemBuilderImpl().configureFromText(data).build();
+    private static LSystem loadLSystem(String path) throws IOException {
+        return new LSystemBuilderImpl().configureFromText(Files.readAllLines(Paths.get(path)).toArray(new String[0])).build();
     }
 
     private void addGLEventListener() {
@@ -99,6 +96,11 @@ public class LSystems extends JFrame {
                 gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
 
                 gl2.glLoadIdentity();
+                try {
+                    loadLSystem(pathSelected).draw(depth, painter);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 for (PainterLine line : painter.getLines()) {
                     var color = line.getColor();
@@ -109,7 +111,6 @@ public class LSystems extends JFrame {
                     gl2.glVertex2d(line.getX1() * glAutoDrawable.getSurfaceWidth(), line.getY1() * glAutoDrawable.getSurfaceHeight());
                     gl2.glEnd();
                 }
-
             }
 
             @Override
@@ -124,6 +125,36 @@ public class LSystems extends JFrame {
                 gl2.glViewport(0, 0, width, height);
                 gl2.glMatrixMode(GL_MODELVIEW);
                 gl2.glLoadIdentity();
+            }
+        });
+    }
+
+    private void addKeyboardListeners() {
+        glCanvas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == VK_1) {
+                        painter.reset();
+                        pathSelected = PATH_TO_PLANT1;
+                    } else if (e.getKeyCode() == VK_2) {
+                        painter.reset();
+                        pathSelected = PATH_TO_PLANT2;
+                    } else if (e.getKeyCode() == VK_3) {
+                        painter.reset();
+                        pathSelected = PATH_TO_PLANT3;
+                    } else if (e.getKeyCode() == VK_4) {
+                        painter.reset();
+                        pathSelected = PATH_TO_PLANT4;
+                    } else if (e.getKeyCode() == VK_P) {
+                        painter.reset();
+                        depth++;
+                    } else if (e.getKeyCode() == VK_M) {
+                        painter.reset();
+                        depth--;
+                    } else {
+                        System.out.println("No key bounded");
+                    }
+                    glCanvas.display();
             }
         });
     }

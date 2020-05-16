@@ -19,8 +19,8 @@ import java.util.Map;
 public class LSystemBuilderImpl implements LSystemBuilder {
 
 
-    private static final double DEFAULT_UNIT_LENGHT = 0.1;
-    private static final double DEFAULT_UNIT_LENGHT_DEGREE_SCALER = 1;
+    private static final double DEFAULT_UNIT_LENGTH = 0.1;
+    private static final double DEFAULT_UNIT_LENGTH_DEGREE_SCALER = 1;
     private static final double DEFAULT_ANGLE = 0;
     private static final Vector2D DEFAULT_ORIGIN = new Vector2D(0, 0);
     private static final String DEFAULT_AXIOM = "";
@@ -34,8 +34,8 @@ public class LSystemBuilderImpl implements LSystemBuilder {
     private final Map<Character, Command> registeredCommands;
 
     public LSystemBuilderImpl() {
-        this.unitLength = DEFAULT_UNIT_LENGHT;
-        this.unitLengthDegreeScaler = DEFAULT_UNIT_LENGHT_DEGREE_SCALER;
+        this.unitLength = DEFAULT_UNIT_LENGTH;
+        this.unitLengthDegreeScaler = DEFAULT_UNIT_LENGTH_DEGREE_SCALER;
         this.origin = DEFAULT_ORIGIN;
         this.angle = DEFAULT_ANGLE;
         this.axiom = DEFAULT_AXIOM;
@@ -203,17 +203,17 @@ public class LSystemBuilderImpl implements LSystemBuilder {
         }
 
         @Override
-        public void draw(int arg0, Painter arg1) {
+        public void draw(int depth, Painter painter) {
             Context context = new Context();
             context.pushState(new TurtleState(origin.copy(), (new Vector2D(1, 0)).rotated(Math.toRadians(angle)),
-                    Color.black, unitLength * (Math.pow(unitLengthDegreeScaler, arg0)), 0.7));
+                    Color.black, unitLength * (Math.pow(unitLengthDegreeScaler, depth)), 0.7));
 
-            String whatToDo = generate(arg0);
+            String whatToDo = generate(depth);
             for (int i = 0; i < whatToDo.length(); i++) {
                 Command command = registeredCommands.get(whatToDo.charAt(i));
                 if (command == null)
                     continue;
-                command.execute(context, arg1);
+                command.execute(context, painter);
             }
         }
 
@@ -234,7 +234,6 @@ public class LSystemBuilderImpl implements LSystemBuilder {
             }
             String production = sb.toString();
             memoisation.add(arg0, production);
-            System.out.println(production);
             return production;
 
         }

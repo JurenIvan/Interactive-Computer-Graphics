@@ -12,6 +12,10 @@ public class Painter {
         lines.add(new PainterLine(x, y, x1, y1, color, efectiveLenght, penSize));
     }
 
+    public void reset() {
+        lines.clear();
+    }
+
     public List<PainterLine> getLines() {
         return lines;
     }

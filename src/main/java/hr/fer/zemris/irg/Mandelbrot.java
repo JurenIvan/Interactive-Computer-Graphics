@@ -8,6 +8,7 @@ import hr.fer.zemris.irg.mandelbrot.PosaoIzracuna;
 import hr.fer.zemris.irg.mandelbrot.StackEntry;
 import hr.fer.zemris.irg.mandelbrot.coloringfunc.BlackAndWhiteColoring;
 import hr.fer.zemris.irg.mandelbrot.coloringfunc.ColorColoring;
+import hr.fer.zemris.irg.mandelbrot.coloringfunc.FunkyColoring;
 import hr.fer.zemris.irg.mandelbrot.divergenefunc.CubicFunction;
 import hr.fer.zemris.irg.mandelbrot.divergenefunc.QuadraticFunction;
 
@@ -120,6 +121,8 @@ public class Mandelbrot extends JFrame {
                     coloringConsumer = new BlackAndWhiteColoring(glCanvas, MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_C)
                     coloringConsumer = new ColorColoring(glCanvas, MAX_ITERATIONS);
+                else if (e.getKeyCode() == VK_F)
+                    coloringConsumer = new FunkyColoring(glCanvas, MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_1)
                     divergeFunction = new QuadraticFunction(MAX_ITERATIONS);
                 else if (e.getKeyCode() == VK_2)

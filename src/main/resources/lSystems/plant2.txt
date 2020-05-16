@@ -9,8 +9,9 @@ command - rotate -25
 command [ push
 command ] pop
 command G color 0000FF
+command s pensize 0.2
 
-axiom GF
+axiom sGF
 
 production F FF-[-F+F+F]+[+F-F-F]
 

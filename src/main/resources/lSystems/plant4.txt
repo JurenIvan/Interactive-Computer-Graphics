@@ -1,7 +1,7 @@
 origin                 0.3 0.0
 angle                  60
 unitLength             0.5
-unitLengthDegreeScaler 1.0 /2.05
+unitLengthDegreeScaler 1.0 /2.00
 
 command F draw 1
 command + rotate 20
@@ -9,8 +9,9 @@ command - rotate -20
 command [ push
 command ] pop
 command c color 00FF00
+command s pensize 0.2
 
-axiom c−F
+axiom sc−F
 
 production F F[+F]F[-F][F]
 
