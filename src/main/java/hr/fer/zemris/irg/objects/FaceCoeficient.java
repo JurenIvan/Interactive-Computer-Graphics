@@ -1,5 +1,6 @@
 package hr.fer.zemris.irg.objects;
 
+import hr.fer.zemris.irg.math.vector.IVector;
 import hr.fer.zemris.irg.math.vector.Vector;
 
 import static java.lang.String.format;
@@ -11,11 +12,18 @@ public class FaceCoeficient {
     private double c;
     private double d;
 
+    private IVector norm;
+
     public FaceCoeficient(double a, double b, double c, double d) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.d = d;
+        norm = new Vector(a, b, c);
+    }
+
+    public IVector getNorm() {
+        return norm;
     }
 
     public double getA() {

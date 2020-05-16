@@ -87,6 +87,10 @@ public class ObjectModel {
         return faces.stream().map(e -> e.calculateCoefficients(vertices)).collect(toList());
     }
 
+    public FaceCoeficient getFaceCoefficients(Face3D face3D) {
+        return face3D.calculateCoefficients(vertices);
+    }
+
     public Boolean calculatePosition(Vertex3D point) {
         List<IVector> intersectionsList = new ArrayList<>();
         int intersections = 0;
@@ -211,5 +215,23 @@ public class ObjectModel {
             }
             vertices.get(i).setNormal(normal.scalarMultiply(1.0 / match).normalize());
         }
+    }
+
+    public double[] getCentralForFace(Face3D face) {
+        double[] sum = new double[]{0, 0, 0};
+
+        for (Vertex3D v : getVerticesOfFace(face)) {
+            var cords = v.getCords();
+            sum[0] += cords[0];
+            sum[1] += cords[1];
+            sum[2] += cords[2];
+        }
+
+        for (int i = 0; i < 3; i++) sum[i] /= 3;
+        return sum;
+    }
+
+    public List<Vertex3D> getVertices() {
+        return vertices;
     }
 }

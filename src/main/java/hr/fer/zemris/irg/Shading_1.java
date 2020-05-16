@@ -39,6 +39,7 @@ public class Shading_1 extends JFrame {
 
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private final ObjectModel objectModel;
+    private boolean smoothing = false;
 
     public static void main(String[] args) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(STANDARD_PATH_TO_RESOURCES + args[0]));
@@ -96,7 +97,6 @@ public class Shading_1 extends JFrame {
                 gl2.glEnable(GL_CULL_FACE);
                 gl2.glCullFace(GL_BACK);
 
-
                 double x = r * Math.cos(Math.toRadians(angle));
                 double y = 4;
                 double z = r * Math.sin(Math.toRadians(angle));
@@ -108,7 +108,12 @@ public class Shading_1 extends JFrame {
                     gl2.glBegin(GL_POLYGON);
 
                     for (Vertex3D vertice : objectModel.getVerticesOfFace(face)) {
-                        IVector normalForVertex = vertice.getNormal();
+                        IVector normalForVertex;
+                        if (smoothing) {
+                            normalForVertex = vertice.getNormal();
+                        } else {
+                            normalForVertex = face.calculateCoefficients(objectModel.getVertices()).getNorm().normalize();
+                        }
                         gl2.glNormal3d(normalForVertex.get(0), normalForVertex.get(1), normalForVertex.get(2));
                         gl2.glVertex3d(vertice.getX(), vertice.getY(), vertice.getZ());
                     }
@@ -118,12 +123,17 @@ public class Shading_1 extends JFrame {
             }
 
             private void initLightningAndMaterials(GL2 gl2) {
+                if(smoothing) {
+                    gl2.glShadeModel(GL_SMOOTH);
+                }else {
+                    gl2.glShadeModel(GL_FLAT);
+                }
                 gl2.glEnable(GL_LIGHTING);
-                gl2.glShadeModel(GL_SMOOTH);
                 gl2.glEnable(GL_LIGHT0);
 
                 gl2.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, new float[]{0, 0, 0, 1}, 0);
                 gl2.glLightfv(GL_LIGHT0, GL_POSITION, new float[]{4.0f, 5.0f, 3.0f, 1.0f}, 0);
+
                 gl2.glLightfv(GL_LIGHT0, GL_AMBIENT, new float[]{0.2f, 0.2f, 0.2f, 1}, 0);
                 gl2.glLightfv(GL_LIGHT0, GL_DIFFUSE, new float[]{0.8f, 0.8f, 0, 1}, 0);
                 gl2.glLightfv(GL_LIGHT0, GL_SPECULAR, new float[]{0, 0, 0, 1}, 0);
@@ -156,6 +166,12 @@ public class Shading_1 extends JFrame {
                         break;
                     case VK_L:
                         calculateLookVariables(-increment);
+                        break;
+                    case VK_K:
+                        smoothing = false;
+                        break;
+                    case VK_S:
+                        smoothing = true;
                         break;
                     case VK_ESCAPE:
                         initLookVariables();
