@@ -63,6 +63,7 @@ public class ObjectModel {
         ObjectModel om = new ObjectModel();
         om.vertices = lines.stream().filter(e -> e.startsWith("v")).map(e -> e.trim().split(" ")).map(e -> Vertex3D.of(parseDouble(e[1]), parseDouble(e[2]), parseDouble(e[3]))).collect(toList());
         om.faces = lines.stream().filter(e -> e.startsWith("f")).map(e -> e.trim().split(" ")).map(e -> Face3D.of(Integer.parseInt(e[1]), Integer.parseInt(e[2]), Integer.parseInt(e[3]))).collect(toList());
+        om.calculateNormalsForVertices();
         return om;
     }
 
@@ -84,6 +85,10 @@ public class ObjectModel {
 
     public List<FaceCoeficient> getFaceCoefficients() {
         return faces.stream().map(e -> e.calculateCoefficients(vertices)).collect(toList());
+    }
+
+    public FaceCoeficient getFaceCoefficients(Face3D face3D) {
+        return face3D.calculateCoefficients(vertices);
     }
 
     public Boolean calculatePosition(Vertex3D point) {
@@ -196,4 +201,37 @@ public class ObjectModel {
 //        }
 //        return true;
 //    }
+
+    public void calculateNormalsForVertices() {
+        for (int i = 0; i < vertices.size(); i++) {
+            IVector normal = new Vector(0, 0, 0);
+            int match = 0;
+            for (Face3D face : faces) {
+                if (face.containsVertice(i)) {
+                    match++;
+                    FaceCoeficient fc = face.calculateCoefficients(vertices);
+                    normal.add(new Vector(fc.getA(), fc.getB(), fc.getC()).normalize());
+                }
+            }
+            vertices.get(i).setNormal(normal.scalarMultiply(1.0 / match).normalize());
+        }
+    }
+
+    public double[] getCentralForFace(Face3D face) {
+        double[] sum = new double[]{0, 0, 0};
+
+        for (Vertex3D v : getVerticesOfFace(face)) {
+            var cords = v.getCords();
+            sum[0] += cords[0];
+            sum[1] += cords[1];
+            sum[2] += cords[2];
+        }
+
+        for (int i = 0; i < 3; i++) sum[i] /= 3;
+        return sum;
+    }
+
+    public List<Vertex3D> getVertices() {
+        return vertices;
+    }
 }

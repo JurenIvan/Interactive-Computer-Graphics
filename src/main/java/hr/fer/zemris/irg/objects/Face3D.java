@@ -62,4 +62,8 @@ public class Face3D {
     public void resetCoefficients() {
         this.faceCoeficient = null;
     }
+
+    public boolean containsVertice(int i) {
+        return x0 - 1 == i || x1 - 1 == i || x2 - 1 == i;
+    }
 }

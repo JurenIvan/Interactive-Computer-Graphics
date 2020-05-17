@@ -1,5 +1,7 @@
 package hr.fer.zemris.irg.objects;
 
+import hr.fer.zemris.irg.math.vector.IVector;
+
 import static java.lang.String.format;
 
 public class Vertex3D {
@@ -8,10 +10,22 @@ public class Vertex3D {
     private double y;
     private double z;
 
+    private IVector normal;
+
     public Vertex3D(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public IVector getNormal() {
+        if (normal == null)
+            throw new IllegalStateException("normal should have been initialized by ObjectModel");
+        return normal;
+    }
+
+    public void setNormal(IVector normal) {
+        this.normal = normal;
     }
 
     public static Vertex3D of(double x, double y, double z) {

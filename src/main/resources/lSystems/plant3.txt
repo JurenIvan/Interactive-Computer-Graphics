@@ -1,0 +1,19 @@
+origin                 0.38 0.0
+angle                  90
+unitLength             0.28
+unitLengthDegreeScaler 1.0 / 1.003
+
+command F draw 1
+command + rotate 30
+command - rotate -30
+command s scale 0.6
+command w pensize 0.6
+command [ push
+command ] pop
+command G color 00FF00
+
+axiom GFX
+
+production Y FX+FY-FX
+production X sw[-FY]+FX
+
