@@ -119,13 +119,7 @@ public class Shading_2 extends JFrame {
 
                 gl2.glEnable(GL_DEPTH_TEST);
                 gl2.glPolygonMode(GL_FRONT, GL_FILL);
-                gl2.glEnable(GL_CULL_FACE);
-//                gl2.glCullFace(GL_BACK);
                 gl2.glShadeModel(GL_SMOOTH);
-
-
-                gl2.glMatrixMode(GL2.GL_MODELVIEW);
-                gl2.glLoadIdentity();
 
                 double x = r * cos(toRadians(angle));
                 double y = 4;
@@ -153,7 +147,6 @@ public class Shading_2 extends JFrame {
                             gl2.glColor3d(rgb[0], rgb[1], rgb[2]);
                             edges.forEach(e -> gl2.glVertex3d(e.get(0), e.get(1),e.get(2)));
                         } else {
-                            gl2.glBegin(GL_POLYGON);
                             for (int i = 0; i < edges.size(); i++) {
                                 IVector e = edges.get(i);
                                 double[] rgb = calc(vertices.get(i).getCords(), vertices.get(i).getNormal(), eye);
