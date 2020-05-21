@@ -40,6 +40,7 @@ public class Shading_1 extends JFrame {
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private final ObjectModel objectModel;
     private boolean smoothing = false;
+    private boolean zStore = true;
 
     public static void main(String[] args) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(STANDARD_PATH_TO_RESOURCES + args[0]));
@@ -91,8 +92,11 @@ public class Shading_1 extends JFrame {
                 gl2.glPushMatrix();
 
                 gl2.glFrontFace(GL_CCW);        //this is default
-
-                gl2.glEnable(GL_DEPTH_TEST);
+                if (zStore) {
+                    gl2.glEnable(GL_DEPTH_TEST);
+                } else {
+                    gl2.glDisable(GL_DEPTH_TEST);
+                }
                 gl2.glPolygonMode(GL_FRONT, GL_FILL);
                 gl2.glEnable(GL_CULL_FACE);
                 gl2.glCullFace(GL_BACK);
@@ -123,9 +127,9 @@ public class Shading_1 extends JFrame {
             }
 
             private void initLightningAndMaterials(GL2 gl2) {
-                if(smoothing) {
+                if (smoothing) {
                     gl2.glShadeModel(GL_SMOOTH);
-                }else {
+                } else {
                     gl2.glShadeModel(GL_FLAT);
                 }
                 gl2.glEnable(GL_LIGHTING);
@@ -170,9 +174,11 @@ public class Shading_1 extends JFrame {
                     case VK_K:
                         smoothing = false;
                         break;
-                    case VK_S:
+                    case VK_G:
                         smoothing = true;
                         break;
+                    case VK_Z:
+                        zStore = !zStore;
                     case VK_ESCAPE:
                         initLookVariables();
                         break;
