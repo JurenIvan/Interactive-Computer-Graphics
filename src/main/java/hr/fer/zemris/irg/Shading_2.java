@@ -64,6 +64,7 @@ public class Shading_2 extends JFrame {
 
     private final GLCanvas glCanvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private final ObjectModel objectModel;
+    private boolean zStore = true;
 
     public static void main(String[] args) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(STANDARD_PATH_TO_RESOURCES + args[0]));
@@ -117,7 +118,11 @@ public class Shading_2 extends JFrame {
 
                 gl2.glFrontFace(GL_CCW);        //this is default
 
-                gl2.glEnable(GL_DEPTH_TEST);
+                if (zStore)
+                    gl2.glEnable(GL_DEPTH_TEST);
+                else
+                    gl2.glDisable(GL_DEPTH_TEST);
+
                 gl2.glPolygonMode(GL_FRONT, GL_FILL);
                 gl2.glShadeModel(GL_SMOOTH);
 
@@ -145,7 +150,7 @@ public class Shading_2 extends JFrame {
                         if (!smoothColoring) {
                             double[] rgb = calc(objectModel.getCentralForFace(face), objectModel.getFaceCoefficients(face).getNorm(), eye);
                             gl2.glColor3d(rgb[0], rgb[1], rgb[2]);
-                            edges.forEach(e -> gl2.glVertex3d(e.get(0), e.get(1),e.get(2)));
+                            edges.forEach(e -> gl2.glVertex3d(e.get(0), e.get(1), e.get(2)));
                         } else {
                             for (int i = 0; i < edges.size(); i++) {
                                 IVector e = edges.get(i);
@@ -222,8 +227,11 @@ public class Shading_2 extends JFrame {
                     case VK_K:
                         smoothColoring = false;
                         break;
-                    case VK_S:
+                    case VK_G:
                         smoothColoring = true;
+                        break;
+                    case VK_Z:
+                        zStore = !zStore;
                         break;
                     case VK_ESCAPE:
                         initLookVariables();

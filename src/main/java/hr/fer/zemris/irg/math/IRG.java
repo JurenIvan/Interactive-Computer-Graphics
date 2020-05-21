@@ -26,24 +26,25 @@ public class IRG {
         return new Matrix(4, 4, matrix, true);
     }
 
-    public static IMatrix lookAtMatrix(IVector eye, IVector center, IVector viewUp) {
-        IVector f = center.nSub(eye).normalize();
-        IVector u = viewUp.nNormalize();
-        IVector s = f.nVectorProduct(u).normalize();
-        u = s.nVectorProduct(f).nNormalize();
+    //creates view-matrix
+    public static IMatrix lookAtMatrix(IVector eye, IVector glediste, IVector viewUp) {
+        IVector forward = glediste.nSub(eye).normalize();         //z os pozitivno
+        IVector up = viewUp.nNormalize();                       //y os pozitivni
+        IVector side = forward.nVectorProduct(up).normalize();  //x os pozitivno
+        up = side.nVectorProduct(forward).nNormalize();
 
         double[][] matrix = new double[4][4];
-        matrix[0][0] = s.get(0);
-        matrix[0][1] = u.get(0);
-        matrix[0][2] = -f.get(0);
+        matrix[0][0] = side.get(0);
+        matrix[0][1] = up.get(0);
+        matrix[0][2] = -forward.get(0);
 
-        matrix[1][0] = s.get(1);
-        matrix[1][1] = u.get(1);
-        matrix[1][2] = -f.get(1);
+        matrix[1][0] = side.get(1);
+        matrix[1][1] = up.get(1);
+        matrix[1][2] = -forward.get(1);
 
-        matrix[2][0] = s.get(2);
-        matrix[2][1] = u.get(2);
-        matrix[2][2] = -f.get(2);
+        matrix[2][0] = side.get(2);
+        matrix[2][1] = up.get(2);
+        matrix[2][2] = -forward.get(2);
 
         matrix[3][3] = 1;
 
