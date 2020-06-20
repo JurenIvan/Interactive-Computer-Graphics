@@ -104,7 +104,10 @@ public class LineDrawer {
             return Optional.empty();
         }
 
-        return Optional.of(new Line(calculateNewPc0(line.getStart().copy(), line.getEnd().copy(), lowerLeftBorder, upperRightBorder), calculateNewPc0(line.getEnd().copy(), line.getStart().copy(), lowerLeftBorder, upperRightBorder), line.getColor()));
+        return Optional.of(new Line(
+                calculateNewPc0(line.getStart().copy(), line.getEnd().copy(), lowerLeftBorder, upperRightBorder),
+                calculateNewPc0(line.getEnd().copy(), line.getStart().copy(), lowerLeftBorder, upperRightBorder),
+                line.getColor()));
     }
 
     private static Point calculateNewPc0(Point point1, Point point2, Point lowerLeftBorder, Point upperRightBorder) {

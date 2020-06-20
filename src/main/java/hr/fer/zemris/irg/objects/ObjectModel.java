@@ -105,7 +105,6 @@ public class ObjectModel {
             if (s < 0) continue;
             IVector intersectionPoint = p0.nAdd(unit.nScalarMultiply(s));
             if (intersectionsList.stream().anyMatch(e -> e.nSub(intersectionPoint).norm() < 1e-6))
-//            if (intersectionsList.contains(intersectionPoint))
                 continue;
 
             intersectionsList.add(intersectionPoint);
