@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    
     compile fileTree(dir: 'lib', include: '*.jar')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

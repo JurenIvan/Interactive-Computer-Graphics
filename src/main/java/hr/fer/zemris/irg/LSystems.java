@@ -32,9 +32,9 @@ import static java.awt.event.KeyEvent.*;
  */
 public class LSystems extends JFrame {
 
-    private static final String PATH_TO_PLANT1 = "src/main/resources/lSystems/plant1.txt";
-    private static final String PATH_TO_PLANT2 = "src/main/resources/lSystems/plant2.txt";
-    private static final String PATH_TO_PLANT3 = "src/main/resources/lSystems/plant3.txt";
+    private static final String PATH_TO_PLANT1 = "src/main/resources/lSystems/hilbertCurve.txt";
+    private static final String PATH_TO_PLANT2 = "src/main/resources/lSystems/kochCurve.txt";
+    private static final String PATH_TO_PLANT3 = "src/main/resources/lSystems/sierpinskiGasket.txt";
     private static final String PATH_TO_PLANT4 = "src/main/resources/lSystems/plant4.txt";
 
     static {
@@ -105,7 +105,7 @@ public class LSystems extends JFrame {
                 for (PainterLine line : painter.getLines()) {
                     var color = line.getColor();
                     gl2.glColor3d(color.getRed(), color.getGreen(), color.getBlue());
-                    gl2.glLineWidth((float) line.getPenSize() * 10);
+                    gl2.glLineWidth((float) line.getPenSize());
                     gl2.glBegin(GL_LINE_STRIP);
                     gl2.glVertex2d(line.getX() * glAutoDrawable.getSurfaceWidth(), line.getY() * glAutoDrawable.getSurfaceHeight());
                     gl2.glVertex2d(line.getX1() * glAutoDrawable.getSurfaceWidth(), line.getY1() * glAutoDrawable.getSurfaceHeight());
